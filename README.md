@@ -10,8 +10,10 @@ Kurulum için gereken ortam gereksinimleri ve bunların nasıl yükleyeceği
 
 Kurulumun nasıl yapılacağına dair adım adım aşamalar
 
-Aşama 1
+Aşama 1 
 Aşama 2
+. 
+.
 
 ## Notlar
 
