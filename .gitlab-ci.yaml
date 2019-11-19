@@ -1,0 +1,55 @@
+stages:
+  - START
+  # images builds
+  - BUILDCONTAINERIMAGES
+  # Apply changes
+  #- KUBERNETESDEPLOY
+  #- KUBERNETESDELETE
+
+variables:
+  APP_IMAGE_TAG: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_COMMIT_SHA  
+  APP_DEPLOY_NAME: ${CI_PROJECT_NAME}  
+
+START:
+   stage: START 
+   variables:
+     GIT_STRATEGY: none  
+   script:            
+    - echo $CI_PROJECT_NAME deploy starting with commit $CI_COMMIT_SHA on branch $CI_COMMIT_REF_NAME
+   when: manual   
+   allow_failure: false
+   tags:
+     - docker-image-build   
+
+BUILDCONTAINERIMAGES:
+  stage: BUILDCONTAINERIMAGES
+  script:   
+    # Compile app    
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    # build application image
+    - docker build -t $APP_IMAGE_TAG .
+    - docker push $APP_IMAGE_TAG    
+    # Cleaun up
+    - docker rmi $APP_IMAGE_TAG    
+    - 'docker rm $(docker ps -a -q) || :' # Delete all stopped containers
+    - 'docker rmi $(docker images -q --filter "dangling=true") || :' # Delete all untagged images    
+    - docker image prune -f
+  tags:
+     - docker-image-build 
+
+# KUBERNETESDEPLOY:
+#   stage: KUBERNETESDEPLOY    
+#   script:        
+#     - envsubst '$${APP_IMAGE_TAG},$${APP_DEPLOY_NAME}' < "k8/deployment.yaml" > "deployment.yaml"
+#     - kubectl apply -f deployment.yaml    
+#   tags:
+#     - docker-image-build-prod
+    
+# KUBERNETESDELETE:
+#   stage: KUBERNETESDELETE    
+#   script:        
+#     - envsubst '$${APP_IMAGE_TAG},$${APP_DEPLOY_NAME}' < "k8/deployment.yaml" > "deployment.yaml"
+#     - kubectl delete -f deployment.yaml  
+#   when: manual    
+#   tags:
+#     - docker-image-build-prod    
