@@ -8,7 +8,8 @@ stages:
 
 variables:
   APP_IMAGE_TAG: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_COMMIT_SHA  
-  APP_DEPLOY_NAME: ${CI_PROJECT_NAME}  
+  APP_DEPLOY_NAME: ${CI_PROJECT_NAME}
+  APP_PORT: 3000
 
 START:
    stage: START 
@@ -40,15 +41,16 @@ BUILDCONTAINERIMAGES:
 KUBERNETESDEPLOY:
   stage: KUBERNETESDEPLOY    
   script:        
-    - envsubst '$${APP_IMAGE_TAG},$${APP_DEPLOY_NAME}' < "k8/deployment.yaml" > "deployment.yaml"
-    - kubectl apply -f deployment.yaml    
+    - envsubst '$${APP_IMAGE_TAG},$${APP_DEPLOY_NAME},$${APP_PORT}' < "k8/deployment.yaml" > "deployment.yaml"
+    - cat deployment.yaml
+    # - kubectl apply -f deployment.yaml    
   tags:
     - docker-image-build-prod
     
 KUBERNETESDELETE:
   stage: KUBERNETESDELETE    
   script:        
-    - envsubst '$${APP_IMAGE_TAG},$${APP_DEPLOY_NAME}' < "k8/deployment.yaml" > "deployment.yaml"
+    - envsubst '$${APP_IMAGE_TAG},$${APP_DEPLOY_NAME},$${APP_PORT}' < "k8/deployment.yaml" > "deployment.yaml"
     - kubectl delete -f deployment.yaml  
   when: manual    
   tags:
