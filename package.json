@@ -1,0 +1,20 @@
+{
+  "name": "ca-gateway-echo",
+  "version": "1.0.0",
+  "description": "Proje açıklaması",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "docker build -t ca-gateway-echo ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://emrah.kucukkaya@sc.ibb.gov.tr/devops/ca-gateway-echo.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
