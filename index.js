@@ -11,4 +11,16 @@ app.get('/echo', (req, res) => {
     res.json({"message": message})
 })
 
+app.get('/nofound', (req, res) => {    
+    res.status(404).json({"message": "Not found"})
+})
+
+app.get('/badRequest', (req, res) => {    
+    res.status(400).json({"message": "Bad request"})
+})
+
+app.get('/internalServiceError', (req, res) => {    
+    res.status(500).json({"message": "Internal service error"})
+})
+
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
