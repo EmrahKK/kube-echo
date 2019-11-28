@@ -36,7 +36,7 @@ app.get('/healthz', (req, res) => {
   var current_hour = date.getHours();
   var current_minutes = date.getMinutes();
   
-  if ((current_hour==16) && (current_minutes<10 && current_minutes>3)) {    
+  if (current_hour==16 && current_minutes>10 ) {    
     res.status(400).json({"Message": "Unhealty.."})  
   } else {
     res.json({"Message": "Healty.."})  
