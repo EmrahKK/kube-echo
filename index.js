@@ -4,7 +4,11 @@ const port = 3000
 
 const startDate = Date.now();
 
-app.get('/', (req, res) => res.send('Hello World!'))
+app.get('/', (req, res) => {
+  const seconds = Math.floor(Date.now() - startDate)/1000;
+  res.json({"Uptime(seconds)": seconds})    
+})
+
 app.get('/json', (req, res) => res.json({"message":"Hello World"}))
 app.get('/echo', (req, res) => {
     let name = req.query.name;
@@ -12,12 +16,27 @@ app.get('/echo', (req, res) => {
     res.json({"message": message})
 })
 
+// http status codes
+app.get('/badRequest', (req, res) => {    
+    res.status(400).json({"message": "Bad request"})
+})
+
+app.get('/nofound', (req, res) => {    
+    res.status(404).json({"message": "Not found"})
+})
+
+app.get('/internalServiceError', (req, res) => {    
+    res.status(500).json({"message": "Internal service error"})
+})
+
+
+// Kubernetes
 app.get('/healthz', (req, res) => {
   var date = new Date();
   var current_hour = date.getHours();
   var current_minutes = date.getMinutes();
   
-  if (current_hour==11 && current_minutes<31 && current_minutes>30) {    
+  if ((current_hour==11||current_hour==13||current_hour==15) && (current_minutes<31 && current_minutes>30)) {    
     res.status(400).json({"Message": "Unhealty.."})  
   } else {
     res.json({"Message": "Healty.."})  
