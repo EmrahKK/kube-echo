@@ -35,7 +35,7 @@ app.get('/healthz', (req, res) => {
   var current_hour = date.getHours();
   var current_minutes = date.getMinutes();
   
-  if (current_hour==13 && current_minutes<5 ) {    
+  if (current_hour==13 && current_minutes<2 ) {    
     res.status(400).json({"Message": "Unhealty..","current_hour": current_hour,"current_minutes": current_minutes})  
   } else {
     res.json({"Message": "Healty..","current_hour": current_hour,"current_minutes": current_minutes})  
