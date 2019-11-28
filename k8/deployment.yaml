@@ -29,5 +29,17 @@ spec:
         image: ${APP_IMAGE_TAG}                  
         ports:
         - containerPort: ${APP_PORT}
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 3000                        
+          initialDelaySeconds: 15
+          periodSeconds: 15
+        startupProbe:
+          httpGet:
+            path: /readiness
+            port: 3000
+          failureThreshold: 30
+          periodSeconds: 10
       imagePullSecrets:
         - name: ibb-gitlab-registry
