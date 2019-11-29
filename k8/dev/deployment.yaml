@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ${APP_DEPLOY_NAME}  
+spec:
+  ports:
+  - port: 80
+    targetPort: ${APP_PORT}
+  selector:
+    app: ${APP_DEPLOY_NAME}
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: ${APP_DEPLOY_NAME}  
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: ${APP_DEPLOY_NAME}
+    spec:
+      containers:
+      - name: ${APP_DEPLOY_NAME}
+        image: ${APP_IMAGE_TAG}
+        ports:
+        - containerPort: ${APP_PORT}
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: ${APP_PORT}                        
+          initialDelaySeconds: 15
+          periodSeconds: 15
+        readinessProbe:
+          httpGet:
+            path: /readiness
+            port: ${APP_PORT}
+          failureThreshold: 30
+          periodSeconds: 10      
