@@ -1,4 +1,6 @@
 
+[![CircleCI](https://circleci.com/gh/EmrahKK/kube-echo.svg?style=svg)](https://circleci.com/gh/EmrahKK/kube-echo)
+
 # Proje Başlığı
 Proje açıklaması
 
