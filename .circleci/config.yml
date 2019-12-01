@@ -13,7 +13,7 @@ jobs:
           command: docker build -t $IMAGE_NAME:latest .
   publish-latest:
     environment:
-      IMAGE_NAME: building-on-ci
+      IMAGE_NAME: kube-echo
     docker:
       - image: circleci/buildpack-deps:stretch
     steps:
