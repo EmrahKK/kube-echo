@@ -21,7 +21,7 @@ app.get('/badRequest', (req, res) => {
     res.status(400).json({"message": "Bad request"})
 })
 
-app.get('/nofound', (req, res) => {    
+app.get('/notFound', (req, res) => {    
     res.status(404).json({"message": "Not found"})
 })
 
@@ -42,7 +42,7 @@ app.get('/healthz', (req, res) => {
   }  
 })
 
-app.get('/readiness', (req, res) => {
+app.get('/readyz', (req, res) => {
     const seconds = Math.floor(Date.now() - startDate)/1000;
     if (seconds<20) {
       res.status(400).json({"Message": "Not Ready.."})  
