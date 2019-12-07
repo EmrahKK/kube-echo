@@ -36,7 +36,7 @@ app.get('/internalServiceError', (req, res) => {
 })
 
 app.post('/log', (req, res) => {
-  let log = "" + Date.now();
+  let log = Date.now()+" - "+req.body;
   console.log(log)
   res.send(log);
 })
