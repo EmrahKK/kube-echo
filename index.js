@@ -64,7 +64,7 @@ app.get('/readyz', (req, res) => {
       .json({"Message": "Not Ready.."})
   } else {
     res.json({"Uptime(seconds)": seconds})
-  };
+  }
 })
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
