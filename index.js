@@ -1,6 +1,14 @@
 const express = require('express')
+var bodyParser = require('body-parser');
+
 const app = express()
 const port = 3000
+
+app.use(bodyParser.text({
+  type: function (req) {
+    return 'text';
+  }
+}));
 
 const startDate = Date.now();
 
@@ -35,10 +43,13 @@ app.get('/internalServiceError', (req, res) => {
     .json({"message": "Internal service error"})
 })
 
-app.post('/log', (req, res) => {
-let log = Date.now() + " - " + JSON.stringify(req.body);
-  console.log(log)
-  res.send(log);
+app.post('/log', (req, res) => {    
+  res = res.status(200);
+  if (req.get('Content-Type')) {    
+    res = res.type(req.get('Content-Type'));
+  }
+  console.log(req.body)
+  res.send(req.body);    
 })
 
 // Kubernetes
