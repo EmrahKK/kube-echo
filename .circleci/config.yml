@@ -13,17 +13,17 @@ jobs:
       - setup_remote_docker
       - run:
           name: Build Docker image
-          command: |            
-            tag=$(git tag --points-at HEAD|grep "^v.*")
+          command: |                        
             echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+            tag=$(git tag --points-at HEAD|grep "^v.*")            
             if [ -z "$tag" ]
             then
-                  docker build -t $IMAGE_NAME:latest .                  
+                  docker build -t emrahkk/kube-echo:latest .                  
             else
-                  docker build -t $IMAGE_NAME:latest -t $IMAGE_NAME:$tag .
-                  docker push $IMAGE_NAME:$tag
+                  docker build -t emrahkk/kube-echo:latest -t emrahkk/kube-echo:$tag .
+                  docker push emrahkk/kube-echo:$tag
             fi                     
-            docker push $IMAGE_NAME:latest        
+            docker push emrahkk/kube-echo:latest       
 workflows:
   version: 2
   build-master:
