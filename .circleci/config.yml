@@ -2,13 +2,14 @@ version: 2.1
 executors:
   docker-publisher:
     environment:
-      IMAGE_NAME: emrahkk/kube-echo
-      TAG: << pipeline.git.tag >>
+      IMAGE_NAME: emrahkk/kube-echo      
     docker:
       - image: circleci/buildpack-deps:stretch
 jobs:
   build:
     executor: docker-publisher
+    environment:
+      TAG: << pipeline.git.tag >>
     steps:
       - checkout
       - setup_remote_docker
