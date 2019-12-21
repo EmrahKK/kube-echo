@@ -16,7 +16,7 @@ jobs:
       - run:
           name: Build Docker image
           command: |                        
-            echo $TAG
+            echo $IMAGE_NAME
 workflows:
   version: 2
   build-master:
