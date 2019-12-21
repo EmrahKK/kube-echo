@@ -16,7 +16,9 @@ jobs:
           command: |            
             echo 'export TAG=$(git tag --points-at HEAD|grep "^v.*")' >> $BASH_ENV
             source $BASH_ENV            
-            echo $TAG
+            echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+            docker build -t $IMAGE_NAME:latest -t $IMAGE_NAME:$TAG .
+            docker push $IMAGE_NAME            
 workflows:
   version: 2
   build-master:
