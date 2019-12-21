@@ -21,6 +21,7 @@ app.get('/json', (req, res) => res.json({"message": "Hello World"}));
 app.get('/echo', (req, res) => {
   let name = req.query.name;
   let message = "Hollo " + name;
+  console.log(message);
   res.json({"message": message});
 });
 
