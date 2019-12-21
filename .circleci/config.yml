@@ -16,7 +16,7 @@ jobs:
       - run:
           name: Build Docker image
           command: |                        
-            env
+            echo $CIRCLE_TAG
 workflows:
   version: 2
   build-master:
