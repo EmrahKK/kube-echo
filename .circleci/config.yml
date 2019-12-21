@@ -16,7 +16,7 @@ jobs:
       - run:
           name: Build Docker image
           command: |                        
-            echo $IMAGE_NAME
+            env
 workflows:
   version: 2
   build-master:
