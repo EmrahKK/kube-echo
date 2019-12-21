@@ -3,6 +3,7 @@ executors:
   docker-publisher:
     environment:
       IMAGE_NAME: emrahkk/kube-echo
+      TAG: << pipeline.git.tag >>
     docker:
       - image: circleci/buildpack-deps:stretch
 jobs:
@@ -13,9 +14,7 @@ jobs:
       - setup_remote_docker
       - run:
           name: Build Docker image
-          command: |            
-            echo 'export TAG=$(git tag --points-at HEAD|grep "^v.*")' >> $BASH_ENV
-            source $BASH_ENV            
+          command: |                        
             echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
             docker build -t $IMAGE_NAME:latest -t $IMAGE_NAME:$TAG .
             docker push $IMAGE_NAME            
@@ -26,4 +25,6 @@ workflows:
       - build:
           filters:
             branches:
-              only: master      
+              only: master    
+            tags:
+              only: /^v.*/  
