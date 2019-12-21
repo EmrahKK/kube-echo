@@ -13,8 +13,7 @@ jobs:
       - setup_remote_docker
       - run:
           name: Build Docker image
-          command: |
-            git version
+          command: |            
             echo 'export TAG=$(git tag --points-at HEAD|grep "^v.*")' >> $BASH_ENV
             source $BASH_ENV            
             echo $TAG
