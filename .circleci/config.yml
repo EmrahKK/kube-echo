@@ -15,8 +15,13 @@ jobs:
       - setup_remote_docker
       - run:
           name: Build Docker image
-          command: |                        
-            echo $CIRCLE_TAG
+          command: |
+            docker build -t $IMAGE_NAME:$CIRCLE_TAG .
+      - run:
+          name: Build Docker image
+          command: |              
+            echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin          
+            docker push $IMAGE_NAME:$CIRCLE_TAG
 workflows:
   version: 2
   build-master:
