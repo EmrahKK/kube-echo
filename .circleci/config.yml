@@ -12,6 +12,12 @@ jobs:
     steps:
       - checkout # check out the code in the project directory
       - run: echo "deploy" # run the `echo` command    
+      - run:
+          name: Build docker image 
+          command: |
+            echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+            docker build -t emrahkk/kube-echo:latest .
+            docker push emrahkk/kube-echo:latest
 
 workflows:
   version: 2
