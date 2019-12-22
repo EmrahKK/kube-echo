@@ -35,7 +35,7 @@ app.get('/badRequest', (req, res) => {
 app.get('/notFound', (req, res) => {
   res
     .status(404)
-    .json({"message": "Not found"})
+    .json({"message": "Not found"});
 });
 
 app.get('/internalServiceError', (req, res) => {
