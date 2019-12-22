@@ -6,7 +6,7 @@ jobs:
     steps:
       - checkout # check out the code in the project directory
       - run: echo "hello world 1" # run the `echo` command      
-  test:
+  release:
     docker: 
       - image: circleci/buildpack-deps:stretch # the primary container, where your job's commands are run
     steps:
@@ -17,4 +17,6 @@ workflows:
   build_and_test:
     jobs:
       - build
-      - test
+      - release:                
+            tags:
+              only: /^v.*/          
