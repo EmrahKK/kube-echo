@@ -5,16 +5,16 @@ jobs:
       - image: circleci/buildpack-deps:stretch # the primary container, where your job's commands are run
     steps:
       - checkout # check out the code in the project directory
-      - run: echo "hello world" # run the `echo` command
-      - run: env
-
+      - run: echo "hello world 1" # run the `echo` command      
+  test:
+    docker: 
+      - image: circleci/buildpack-deps:stretch # the primary container, where your job's commands are run
+    steps:
+      - checkout # check out the code in the project directory
+      - run: echo "hello world 2" # run the `echo` command    
 workflows:
   version: 2
-  build-master:
+  build_and_test:
     jobs:
-      - build:
-          filters:
-            branches:
-              only: master                
-            tags:
-              only: /^v.*/          
+      - build
+      - test
