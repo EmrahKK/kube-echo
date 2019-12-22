@@ -17,6 +17,7 @@ workflows:
   build_and_test:
     jobs:
       - build
-      - release:                
-            tags:
-              only: /^v.*/          
+      - release:
+          filters:                
+              tags:
+                only: /^v.*/          
