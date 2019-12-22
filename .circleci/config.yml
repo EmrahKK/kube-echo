@@ -1,22 +1,12 @@
 version: 2.1
-executors:
-  docker-publisher:
-    environment:
-      IMAGE_NAME: emrahkk/kube-echo      
-    docker:
-      - image: circleci/buildpack-deps:stretch
 jobs:
   build:
-    executor: docker-publisher
-    environment:
-      TAG: << pipeline.git.tag >>
+    docker: 
+      - image: circleci/buildpack-deps:stretch # the primary container, where your job's commands are run
     steps:
-      - checkout
-      - setup_remote_docker
-      - run:
-          name: Build Docker image
-          command: |
-              git version
+      - checkout # check out the code in the project directory
+      - run: echo "hello world" # run the `echo` command
+      - run: env
 workflows:
   version: 2
   build-master:
@@ -24,6 +14,4 @@ workflows:
       - build:
           filters:
             branches:
-              only: master    
-            tags:
-              only: /^v.*/  
+              only: master                
