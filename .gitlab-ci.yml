@@ -44,7 +44,7 @@ KUBERNETESDEPLOY:
     - envsubst '$${APP_IMAGE_TAG},$${APP_DEPLOY_NAME},$${APP_PORT}' < "k8/deployment.yaml" > "deployment.yaml"    
     - kubectl apply -f deployment.yaml    
   tags:
-    - docker-image-build-prod
+    - docker-image-build
     
 KUBERNETESDELETE:
   stage: KUBERNETESDELETE    
@@ -53,4 +53,4 @@ KUBERNETESDELETE:
     - kubectl delete -f deployment.yaml  
   when: manual    
   tags:
-    - docker-image-build-prod  
+    - docker-image-build
