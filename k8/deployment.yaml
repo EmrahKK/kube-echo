@@ -42,6 +42,6 @@ spec:
           failureThreshold: 30
           periodSeconds: 10
       nodeSelector:
-        host-lbl: worker1
+        host-lbl: worker2
       imagePullSecrets:
         - name: ibb-gitlab-registry
