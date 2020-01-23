@@ -9,12 +9,14 @@ app.use(bodyParser.text({
   }
 }));
 const startDate = Date.now();
+
 app.get('/', (req, res) => {
   const seconds = Math.floor(Date.now() - startDate) / 1000;
   res.json({"Uptime(seconds)": seconds});
 });
 
 app.get('/json', (req, res) => res.json({"message": "Hello World"}));
+
 app.get('/echo', (req, res) => {
   let name = req.query.name;
   let message = "Hollo " + name;
@@ -62,7 +64,7 @@ app.get('/healthz', (req, res) => {
 });
 app.get('/readyz', (req, res) => {
   const seconds = Math.floor(Date.now() - startDate) / 1000;
-  if (seconds < 20) {
+  if (seconds < 10) {
     res
       .status(400)
       .json({"Message": "Not Ready.."});
