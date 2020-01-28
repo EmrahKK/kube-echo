@@ -37,9 +37,11 @@ spec:
           periodSeconds: 15
         readinessProbe:
           httpGet:
-            path: /readiness
+            path: /readyz
             port: 3000
           failureThreshold: 30
           periodSeconds: 10
+      nodeSelector:
+        host-lbl: worker2
       imagePullSecrets:
         - name: ibb-gitlab-registry

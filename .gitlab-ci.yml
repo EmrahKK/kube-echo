@@ -53,4 +53,4 @@ KUBERNETESDELETE:
     - kubectl delete -f deployment.yaml  
   when: manual    
   tags:
-    - docker-image-build  
+    - docker-image-build
