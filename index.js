@@ -9,6 +9,15 @@ app.use(bodyParser.text({
   }
 }));
 const startDate = Date.now();
+
+function sleep(time, callback) {
+  var stop = new Date().getTime();
+  while(new Date().getTime() < stop + time) {
+      ;
+  }
+  callback();
+}
+
 app.get('/', (req, res) => {
   const seconds = Math.floor(Date.now() - startDate) / 1000;
   res.json({"Uptime(seconds)": seconds});
@@ -45,6 +54,13 @@ app.post('/log', (req, res) => {
   }
   console.log(req.body);
   res.send(req.body);    
+});
+app.get('/sleep', (req, res) => {    
+  res = res.status(200);
+  let time = parseInt(req.query.time, 10);  
+  sleep(time, function() {
+    res.send(req.body);    
+  });    
 });
 // Kubernetes
 app.get('/healthz', (req, res) => {
