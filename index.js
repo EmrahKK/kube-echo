@@ -75,8 +75,7 @@ app.get('/healthz', (req, res) => {
   //     .json({"Message": "Unhealty..", "current_hour": current_hour, "current_minutes": current_minutes});
   // } else {
   //   res.json({"Message": "Healty..", "current_hour": current_hour, "current_minutes": current_minutes});
-  // }
-  
+  // }  
 });
 app.get('/readyz', (req, res) => {
   //const seconds = Math.floor(Date.now() - startDate) / 1000;
