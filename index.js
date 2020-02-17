@@ -77,13 +77,8 @@ app.get('/healthz', (req, res) => {
   }
 });
 app.get('/readyz', (req, res) => {
-  const seconds = Math.floor(Date.now() - startDate) / 1000;
-  if (seconds < 20) {
-    res
-      .status(400)
-      .json({"Message": "Not Ready.."});
-  } else {
-    res.json({"Uptime(seconds)": seconds});
-  }
+  //const seconds = Math.floor(Date.now() - startDate) / 1000;
+  res.json({"Uptime(seconds)": seconds});
+  
 });
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
