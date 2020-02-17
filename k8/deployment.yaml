@@ -5,13 +5,14 @@ metadata:
   namespace: ibb
 spec:
   type: LoadBalancer
-  loadBalancerIP: 10.5.26.165
+  loadBalancerIP: 10.5.26.67
   ports:
   - port: 80
     targetPort: ${APP_PORT}
   selector:
     app: ${APP_DEPLOY_NAME}
 ---
+
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
