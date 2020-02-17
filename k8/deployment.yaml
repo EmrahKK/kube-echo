@@ -33,8 +33,7 @@ spec:
           httpGet:
             path: /healthz
             port: 3000                        
-          initialDelaySeconds: 15
-          periodSeconds: 15
+          initialDelaySeconds: 10          
         readinessProbe:
           httpGet:
             path: /readyz
