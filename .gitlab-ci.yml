@@ -25,6 +25,7 @@ START:
 BUILD:
   stage: BUILD
   script:   
+    - chmod +x build.sh
     - ./build.sh $CI_COMMIT_REF_NAME
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY    
     - docker build -t $APP_IMAGE .
