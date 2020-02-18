@@ -1,56 +1,103 @@
 stages:
   - START
-  # images builds
-  - BUILDCONTAINERIMAGES
-  # Apply changes
-  - KUBERNETESDEPLOY
-  - KUBERNETESDELETE
+  - BUILD
+  - DEPLOY
+  - DELETE
 
 variables:
-  APP_IMAGE_TAG: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_COMMIT_SHA  
-  APP_DEPLOY_NAME: ${CI_PROJECT_NAME}
-  APP_PORT: 3000
+  APP_NAME: ${CI_PROJECT_NAME}
+  NAMESAPCE: ibb     
+  APP_PORT: 80
+  APP_IMAGE: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_COMMIT_SHA
+  REPLICAS: 1 
 
 START:
    stage: START 
    variables:
      GIT_STRATEGY: none  
    script:            
-    - echo $CI_PROJECT_NAME deploy starting with commit $CI_COMMIT_SHA on branch $CI_COMMIT_REF_NAME
+    - echo $CI_PROJECT_NAME pipeline starting with commit $CI_COMMIT_SHA on branch $CI_COMMIT_REF_NAME
    when: manual   
    allow_failure: false
    tags:
      - docker-image-build   
 
-BUILDCONTAINERIMAGES:
-  stage: BUILDCONTAINERIMAGES
+BUILD:
+  stage: BUILD
   script:   
-    # Compile app    
-    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-    # build application image
-    - docker build -t $APP_IMAGE_TAG .
-    - docker push $APP_IMAGE_TAG    
-    # Cleaun up
-    - docker rmi $APP_IMAGE_TAG    
+    - ./build.sh $CI_COMMIT_REF_NAME
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY    
+    - docker build -t $APP_IMAGE .
+    - docker push $APP_IMAGE        
+    - docker rmi $APP_IMAGE    
+    # Cleanup
     - 'docker rm $(docker ps -a -q) || :' # Delete all stopped containers
     - 'docker rmi $(docker images -q --filter "dangling=true") || :' # Delete all untagged images    
     - docker image prune -f
+  only:
+    - test
+    - master
   tags:
      - docker-image-build 
 
-KUBERNETESDEPLOY:
-  stage: KUBERNETESDEPLOY    
+DEPLOY-TEST:
+  stage: DEPLOY    
   script:        
-    - envsubst '$${APP_IMAGE_TAG},$${APP_DEPLOY_NAME},$${APP_PORT}' < "k8/deployment.yaml" > "deployment.yaml"    
-    - kubectl apply -f deployment.yaml    
+    - envsubst '$${APP_NAME},$${NAMESAPCE},$${SERVICE_IP},$${APP_PORT},$${APP_IMAGE},$${REPLICAS},$${ENV}' < "k8/deployment.yaml" > "deployment.yaml"
+    - kubectl apply -f deployment.yaml  
+  only:
+    - test    
   tags:
-    - docker-image-build
-    
-KUBERNETESDELETE:
-  stage: KUBERNETESDELETE    
+    - kube-deploy-test
+
+DELETE-TEST:
+  stage: DELETE    
   script:        
-    - envsubst '$${APP_IMAGE_TAG},$${APP_DEPLOY_NAME},$${APP_PORT}' < "k8/deployment.yaml" > "deployment.yaml"
-    - kubectl delete -f deployment.yaml  
-  when: manual    
+    - envsubst '$${APP_NAME},$${NAMESAPCE},$${SERVICE_IP},$${APP_PORT},$${APP_IMAGE},$${REPLICAS},$${ENV}' < "k8/deployment.yaml" > "deployment.yaml"
+    - kubectl delete -f deployment.yaml 
+  when: manual
+  only:
+    - test    
   tags:
-    - docker-image-build
+    - kube-deploy-test
+
+DEPLOY-PROD:
+  stage: DEPLOY    
+  script:        
+    - envsubst '$${APP_NAME},$${NAMESAPCE},$${SERVICE_IP},$${APP_PORT},$${APP_IMAGE},$${REPLICAS},$${ENV}' < "k8/deployment.yaml" > "deployment.yaml"
+    - kubectl apply -f deployment.yaml  
+  only:    
+    - master    
+  tags:
+    - kube-deploy-prod
+
+DELETE-PROD:
+  stage: DELETE    
+  script:        
+    - envsubst '$${APP_NAME},$${NAMESAPCE},$${SERVICE_IP},$${APP_PORT},$${APP_IMAGE},$${REPLICAS},$${ENV}' < "k8/deployment.yaml" > "deployment.yaml"
+    - kubectl delete -f deployment.yaml 
+  when: manual
+  only:    
+    - master
+  tags:
+    - kube-deploy-prod
+
+# ---------------------------------------------------------------------------
+.setup_env: &setup_env |
+  # Auto DevOps variables and functions
+  [[ "$TRACE" ]] && set -x
+
+  function setupEnv() {    
+    if [[ "${CI_BUILD_REF_NAME}" == master ]]; then
+      export ENV=prod;
+      export SERVICE_IP=$SERVICE_IP_PROD;
+    else
+      export ENV=test;
+      export SERVICE_IP=$SERVICE_IP_TEST;
+    fi    
+  }
+
+  setupEnv
+
+before_script:
+  - *setup_env 

@@ -1,45 +1,53 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: ${APP_DEPLOY_NAME}
-  namespace: ibb
+  name: ${APP_NAME}
+  namespace: ${NAMESAPCE}
 spec:
   type: LoadBalancer
-  loadBalancerIP: 10.5.26.67
+  loadBalancerIP: ${SERVICE_IP}
   ports:
   - port: 80
     targetPort: ${APP_PORT}
   selector:
-    app: ${APP_DEPLOY_NAME}
+    app: ${APP_NAME}
 ---
-
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ${APP_DEPLOY_NAME}
-  namespace: ibb
+  name: ${APP_NAME}
+  namespace: ${NAMESAPCE}
+  labels:
+    app: ${APP_NAME}
 spec:
-  replicas: 1
+  replicas: ${REPLICAS}
+  selector:
+    matchLabels:
+      app: ${APP_NAME}
   template:
     metadata:
       labels:
-        app: ${APP_DEPLOY_NAME}
+        app: ${APP_NAME}
     spec:
       containers:
-      - name: ${APP_DEPLOY_NAME}
-        image: ${APP_IMAGE_TAG}                  
+      - name: ${APP_NAME}
+        image: ${APP_IMAGE}
         ports:
         - containerPort: ${APP_PORT}
-        # livenessProbe:
-        #   httpGet:
-        #     path: /healthz
-        #     port: 3000                        
-        #   initialDelaySeconds: 10          
-        # readinessProbe:
-        #   httpGet:
-        #     path: /readyz
-        #     port: 3000
-        #   failureThreshold: 15
-        #   periodSeconds: 10      
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: ${APP_PORT}                        
+          initialDelaySeconds: 15
+          periodSeconds: 15
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: ${APP_PORT}
+          failureThreshold: 30
+          periodSeconds: 10
+        env:
+        - name: ENVR
+          value: ${ENV}
       imagePullSecrets:
         - name: ibb-gitlab-registry
